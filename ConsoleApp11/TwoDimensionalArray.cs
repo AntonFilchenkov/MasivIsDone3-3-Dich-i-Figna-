@@ -8,19 +8,18 @@ namespace ConsoleApp11
 {
     interface ITwoDimensionalArray : IBaseArray
     {
-        void Reverse();
 
     }
 
-    sealed class TwoDimensionalArray : ITwoDimensionalArray
+    sealed class TwoDimensionalArray<T> : ITwoDimensionalArray
     {
-        private int[,] array;
+        private T[,] array;
 
-        public int[,] Array { get => array; set => array = value; }
+        public T[,] Array { get => array; set => array = value; }
 
         public TwoDimensionalArray(int columns, int rows, bool fillKeyboard = false)
         {
-            array = new int[rows, columns];
+            array = new T[rows, columns];
 
             if (fillKeyboard == true)
             {
@@ -37,26 +36,61 @@ namespace ConsoleApp11
             {
                 for (int y = 0; y < array.GetLength(1); y++)
                 {
-                    array[x, y] = random.Next(0, 10);
+                    if (typeof(T) == typeof(int))
+                    {
+                        array[x, y] = (T)(object)random.Next(0, 10);
+                    }
+                    else if (typeof(T) == typeof(double))
+                    {
+                        array[x, y] = (T)(object)random.NextDouble();
+                    }
+                    else if (typeof(T) == typeof(bool))
+                    {
+                        if (random.Next(0, 2) == 0)
+                            array[x, y] = (T)(object)false;
+                        else array[x, y] = (T)(object)true;
+                    }
+                    else if (typeof(T) == typeof(string))
+                    {
+                        array[x, y] = (T)(object)("Q" + random.Next(0, 10).ToString());
+                    }
                 }
             }
         }
+
 
         // Метод заполнения массива с клавиатуры
         public void FillKeyboard()
         {
             Console.WriteLine("Ввод с клавиатуры:");
+            Console.WriteLine("Тип данных: " + typeof(T));
 
             for (int x = 0; x < array.GetLength(0); x++)
             {
                 for (int y = 0; y < array.GetLength(1); y++)
                 {
                     Console.Write($"[{x}, {y}] = ");
-                    array[x, y] = int.Parse(Console.ReadLine());
+
+                    if (typeof(T) == typeof(int))
+                    {
+                        array[x, y] = (T)(object)Convert.ToInt32(Console.ReadLine());
+                    }
+                    else if (typeof(T) == typeof(double))
+                    {
+                        array[x, y] = (T)(object)Convert.ToDouble(Console.ReadLine());
+                    }
+                    else if (typeof(T) == typeof(bool))
+                    {
+                        array[x, y] = (T)(object)Convert.ToBoolean(Console.ReadLine());
+                    }
+                    else if (typeof(T) == typeof(string))
+                    {
+                        array[x, y] = (T)(object)Convert.ToString(Console.ReadLine());
+                    }
                 }
             }
-
         }
+
 
         // Метод вывода массива на экран
         public void Print()
@@ -71,50 +105,6 @@ namespace ConsoleApp11
                 }
                 Console.WriteLine(" ");
             }
-
         }
-        public void Middle()
-        {
-            Console.WriteLine("Среднее значение");
-            int r = 0;
-            for (int x = 0; x < array.GetLength(0); x++)
-            {
-                for (int y = 0; y < array.GetLength(1); y++)
-                {
-                    r += array[x, y];
-                }
-            }
-            int q = array.GetLength(0) * array.GetLength(1);
-            Console.WriteLine(r / q);
-        }
-
-        public void Reverse()
-        {
-            Console.WriteLine("Если строка четная, то выводим с конца");
-            int r = 0;
-            for (int x = 0; x < array.GetLength(0); x++)
-            {
-                if (x % 2 != 0)
-                {
-                    for (int y = 0; y < array.GetLength(1) / 2; y++)
-                    {
-                        r = array[x, y];
-                        array[x, y] = array[x, array.GetLength(1) - y - 1];
-                        array[x, array.GetLength(1) - y - 1] = r;
-                    }
-                }
-            }
-            for (int x = 0; x < array.GetLength(0); x++)
-            {
-                for (int y = 0; y < array.GetLength(1); y++)
-                {
-                    Console.Write(array[x, y] + " ");
-                }
-                Console.WriteLine(" ");
-            }
-
-        }
-
-        
     }
 }

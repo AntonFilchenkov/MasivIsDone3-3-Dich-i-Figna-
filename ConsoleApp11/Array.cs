@@ -10,8 +10,6 @@ namespace ConsoleApp11
     {
         public void FillRandom();
         public void FillKeyboard();
-        public void Middle();
-
     }
 
     interface IPrinter
